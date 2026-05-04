@@ -2,7 +2,7 @@ FROM php:8.4-cli
 # 安装系统依赖
 RUN apt-get update && apt-get install -y \
     git unzip curl libzip-dev zip \
-    && docker-php-ext-install zip pdo pdo_mysql
+    && docker-php-ext-install zip pdo pdo_mysql gd
 
 # 安装 Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
