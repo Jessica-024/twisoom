@@ -3,25 +3,25 @@ FROM php:8.2-cli
 # 安装系统依赖
 RUN apt-get update && apt-get install -y \
     git unzip curl libzip-dev zip \
-    && docker-php-ext-install pdo pdo_mysql zip
+    && docker-php-ext-install zip
 
 # 安装 Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# 设定工作目录
-WORKDIR /app
+# 设置工作目录
+WORKDIR /var/www
 
 # 复制项目
 COPY . .
 
-# 安装 Laravel dependencies
-RUN composer install --no-dev --optimize-autoloader
+# 安装 Laravel 依赖
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Laravel optimize
-RUN php artisan config:cache || true
+# Laravel 设置
+RUN php artisan key:generate || true
 
-# 开放端口
+# 端口
 EXPOSE 10000
 
-# 启动
-CMD php -S 0.0.0.0:10000 -t public
+# 启动 Laravel
+CMD php artisan serve --host=0.0.0.0 --port=10000
